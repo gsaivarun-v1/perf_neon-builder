@@ -238,11 +238,8 @@ jobs:
             if [ -n "$DTBO" ] && [ -f "$KERNEL_DIR/out/arch/arm64/boot/$DTBO" ]; then cp "$KERNEL_DIR/out/arch/arm64/boot/$DTBO" AnyKernel3/; fi
 
             echo "-- Copying kernel modules to AnyKernel3..."
-            mkdir -p modules &> /dev/null
-            mkdir -p modules/vendor &> /dev/null
-            mkdir -p modules/vendor/lib &> /dev/null
-            mkdir -p modules/vendor/lib/modules &> /dev/null
-            cp $KERNEL_DIR/modules/*.ko modules/vendor/lib/modules/
+            mkdir -p AnyKernel3/modules/vendor/lib/modules &> /dev/null
+            cp $KERNEL_DIR/modules/*.ko AnyKernel3/modules/vendor/lib/modules/
 
             echo "-- Updating AnyKernel3 settings..."
             sed -i "s/supported.versions=11-16/supported.versions=$VERSIONS/" AnyKernel3/anykernel.sh

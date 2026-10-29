@@ -238,7 +238,10 @@ jobs:
 
             echo "-- Copying kernel modules to AnyKernel3..."
             mkdir -p modules &> /dev/null
-            cp "$KERNEL_DIR/modules/*.ko" modules/
+            mkdir -p modules/vendor &> /dev/null
+            mkdir -p modules/vendor/lib &> /dev/null
+            mkdir -p modules/vendor/lib/modules &> /dev/null
+            cp "$KERNEL_DIR/modules/*.ko" modules/vendor/lib/modules/
 
             echo "-- Updating AnyKernel3 settings..."
             sed -i "s/supported.versions=11-16/supported.versions=$VERSIONS/" AnyKernel3/anykernel.sh

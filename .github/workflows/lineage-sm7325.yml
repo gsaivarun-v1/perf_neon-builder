@@ -208,6 +208,7 @@ jobs:
             mkdir -p modules &> /dev/null
             find out/ -type f -name "*.ko" -exec cp {} modules/ \;
             llvm-strip --strip-debug modules/*.ko
+            ls -alhZ modules/
             cd ..
 
             echo "-- Writing release info.txt..."
@@ -241,7 +242,7 @@ jobs:
             mkdir -p modules/vendor &> /dev/null
             mkdir -p modules/vendor/lib &> /dev/null
             mkdir -p modules/vendor/lib/modules &> /dev/null
-            cp "$KERNEL_DIR/modules/*.ko" modules/vendor/lib/modules/
+            cp $KERNEL_DIR/modules/*.ko modules/vendor/lib/modules/
 
             echo "-- Updating AnyKernel3 settings..."
             sed -i "s/supported.versions=11-16/supported.versions=$VERSIONS/" AnyKernel3/anykernel.sh

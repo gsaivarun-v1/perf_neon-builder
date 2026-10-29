@@ -87,7 +87,7 @@ jobs:
             echo "-- Generating generic kernel config..."
             cd $KERNEL_DIR
             mkdir -p out &> /dev/null
-            make O=out $MAKE_ARGS "$MAIN_DEFCONFIG" &> /dev/null
+            make O=$PWD/out $MAKE_ARGS "$MAIN_DEFCONFIG" &> /dev/null
 
             echo "-- Appending fragments to .config..."
             for fragment in $COMMON_DEFCONFIG $DEVICE_DEFCONFIG $FEATURE_DEFCONFIG; do
@@ -99,9 +99,9 @@ jobs:
                 fi
             done
 
-            echo "-- Executing olddefconfig and silentoldconfig..."
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
+            echo "-- Executing olddefconfig and syncconfig..."
+            { yes "" 2>/dev/null || true; } | make O=$PWD/out $MAKE_ARGS olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=$PWD/out $MAKE_ARGS syncconfig &> /dev/null
 
             echo "-- Copying merged config to defconfig directory..."
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_stock_defconfig
@@ -175,20 +175,18 @@ jobs:
             echo "-- Prepping build environment..."
             cd "$KERNEL_DIR"
 
-            OUT_DIR="out"
+            OUT_DIR="$PWD/out"
             mkdir -p $OUT_DIR &> /dev/null
-            ln -sf $(pwd)/techpack $OUT_DIR/techpack
-            ln -sf $(pwd)/scripts $OUT_DIR/scripts
 
             echo "-- Parsing final defconfig..."
-            make O=out $MAKE_ARGS $COMPILE_DEFCONFIG &> /dev/null
+            make O=$OUT_DIR $MAKE_ARGS $COMPILE_DEFCONFIG &> /dev/null
 
-            echo "-- Executing olddefconfig and silentoldconfig..."
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
+            echo "-- Executing olddefconfig and syncconfig..."
+            { yes "" 2>/dev/null || true; } | make O=$OUT_DIR $MAKE_ARGS olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=$OUT_DIR $MAKE_ARGS syncconfig &> /dev/null
 
             echo "-- Compiling the kernel..."
-            make -j$(nproc --all) O=out $MAKE_ARGS 2>&1 | tee build.log
+            make -j$(nproc --all) O=$OUT_DIR $MAKE_ARGS 2>&1 | tee build.log
 
             echo "-- Exporting build versions..."
             export KSU_NAME=$(grep -m 1 -e "-- BakaSU version name:" build.log | awk -F': ' '{print $2}' | tr -d '[:space:]')

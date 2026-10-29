@@ -100,8 +100,8 @@ jobs:
             done
 
             echo "-- Executing olddefconfig and silentoldconfig..."
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig
-            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS olddefconfig &> /dev/null
+            { yes "" 2>/dev/null || true; } | make O=out $MAKE_ARGS syncconfig &> /dev/null
 
             echo "-- Copying merged config to defconfig directory..."
             cp out/.config arch/arm64/configs/"${{ matrix.devices }}"_stock_defconfig
@@ -174,7 +174,11 @@ jobs:
         run: |
             echo "-- Prepping build environment..."
             cd "$KERNEL_DIR"
-            mkdir -p out &> /dev/null
+
+            OUT_DIR="out"
+            mkdir -p $OUT_DIR &> /dev/null
+            ln -sf $(pwd)/techpack $OUT_DIR/techpack
+            ln -sf $(pwd)/scripts $OUT_DIR/scripts
 
             echo "-- Parsing final defconfig..."
             make O=out $MAKE_ARGS $COMPILE_DEFCONFIG &> /dev/null

@@ -2,7 +2,8 @@
 
 # Export nomount variables
 NOMOUNT_SETUP_URI="https://raw.githubusercontent.com/maxsteeel/nomount/refs/heads/master/kernel/setup.sh"
-NOMOUNT_SETUP_BRANCH="v2.3.0-720"
+#NOMOUNT_SETUP_BRANCH="v2.3.0-720"
+NOMOUNT_SETUP_BRANCH="dev"
 
 # Setup nomount
 cd $KERNEL_DIR

@@ -31,6 +31,8 @@ jobs:
 
       - name: Collect device configs
         id: devices
+        env:
+          TARGETS: violet
         run: echo "matrix=$(python3 .github/scripts/matrix.py)" >> "$GITHUB_OUTPUT"
 
   # One reusable workflow call per devices/<device>/<os>.conf
